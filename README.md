@@ -1,3 +1,3 @@
 # Demo
 
-Describe the project you are creating
+Describe the project you are creating!
