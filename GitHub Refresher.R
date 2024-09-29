@@ -9,7 +9,7 @@
 # git config --global user.email johndoe@example.com
 
 #or you can use this command in R with usethis package:
-#usethis::use_git_config(user.name="Zach Shelly", user.email="zshelly2000@gmail.com")
+usethis::use_git_config(user.name="Zach Shelly", user.email="zshelly2000@gmail.com")
 
 #set up a personal access token to link online github profile to R environement.
 # go to https://github.com/settings/tokens and click “Generate token”.
