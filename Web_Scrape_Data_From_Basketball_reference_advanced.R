@@ -61,4 +61,6 @@ advanced_br_webscrape <- function(){
   #convert the matrix to a data.frame and assign column names
   df_advanced <- as.data.frame(data_matrix, stringsAsFactors = FALSE)
   colnames(df_advanced) <- column_names
+  
+  return(df_advanced)
 }

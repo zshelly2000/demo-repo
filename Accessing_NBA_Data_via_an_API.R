@@ -87,15 +87,11 @@ get_NBA_data_via_API <- function(){
           player_stats_df <- as.data.frame(rows, stringsAsFactors = FALSE)
           colnames(player_stats_df) <- headers_data
           
-          # View the first few rows
-          head(player_stats_df)
         } else if (is.list(rows)) {
           # Combine list of rows into data frame
           player_stats_df <- as.data.frame(do.call(rbind, rows), stringsAsFactors = FALSE)
           colnames(player_stats_df) <- headers_data
-          
-          # View the first few rows
-          head(player_stats_df)
+
         } else {
           print("Unexpected data structure for 'rows'")
         }
@@ -110,4 +106,6 @@ get_NBA_data_via_API <- function(){
   } else {
     print(paste("Request failed with status code:", status_code(response)))
   }
+  
+  return(player_stats_df)
 }

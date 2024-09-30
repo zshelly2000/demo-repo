@@ -61,4 +61,6 @@ per_game_br_webscrape <- function(){
   #convert the matrix to a data.frame and assign column names
   df_per_game <- as.data.frame(data_matrix, stringsAsFactors = FALSE)
   colnames(df_per_game) <- column_names
+  
+  return(df_per_game)
 }
