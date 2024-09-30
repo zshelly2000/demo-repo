@@ -11,6 +11,6 @@ source("Web_Scrape_Data_From_Basketball_reference_advanced.R")
 source("Web_Scrape_Data_From_Basketball_reference_per_game.R")
 
 # Call the functions
-get_NBA_data_via_API()
-advanced_br_webscrape()
-per_game_br_webscrape()
+nba_stats <- get_NBA_data_via_API()
+br_advanced <- advanced_br_webscrape()
+br_per_game <- per_game_br_webscrape()
