@@ -5,10 +5,6 @@ library(httr)
 library(jsonlite)
 library(here)
 
-setwd("C:/Users/zshelly/OneDrive - Sacramento Kings/Documents/demo-repo")
-
-here()
-
 # Source the scripts
 source(here("data_gathering", "Accessing_NBA_Data_via_an_API.R"))
 source(here("data_gathering", "Web_Scrape_Data_From_Basketball_reference_advanced.R"))
