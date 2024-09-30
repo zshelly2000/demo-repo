@@ -19,3 +19,6 @@ usethis::use_git_config(user.name="Your Name", user.email="yourname@gmail.com")
 
 #use the following code to get a prompt where you can paste your PAT (personal access token):
 gitcreds::gitcreds_set()
+
+
+#Select new project and use Git/SVN or select tools and global options and you can access Git/SVN there as well
