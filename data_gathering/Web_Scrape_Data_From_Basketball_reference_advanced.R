@@ -62,5 +62,39 @@ advanced_br_webscrape <- function(){
   df_advanced <- as.data.frame(data_matrix, stringsAsFactors = FALSE)
   colnames(df_advanced) <- column_names
   
+  #they use pho, cho, and brk I want phx, cha, and bkn to be the official abbreviations
+  df_advanced$Tm[df_advanced$Tm == 'PHO'] <- 'PHX'
+  df_advanced$Tm[df_advanced$Tm == 'CHO'] <- 'CHA'
+  df_advanced$Tm[df_advanced$Tm == 'BRK'] <- 'BKN'
+  
+  #remove the little blank columns that they put in here:
+  df_advanced <- df_advanced[, -c(20, 25)]
+  
+  #I want to normalize column headers that will be shared across tables i.e. team name, player name, age, player_id
+  colnames(df_advanced)[colnames(df_advanced) == "Rk"] <- "PLAYER_ID"
+  colnames(df_advanced)[colnames(df_advanced) == "Player"] <- "PLAYER_NAME"
+  colnames(df_advanced)[colnames(df_advanced) == "Age"] <- "AGE"
+  colnames(df_advanced)[colnames(df_advanced) == "Tm"] <- "TEAM_ABBREVIATION"
+  
+  #Basketball Reference does multiple lines for players who played for multiple teams during the season. I want to use the team that they ended the year with.
+  df_advanced <- df_advanced %>%
+    group_by(PLAYER_ID) %>%
+    mutate(
+      # Identify if the player has a "TOT" row (i.e., was traded)
+      has_tot = any(TEAM_ABBREVIATION == "TOT"),
+      # Identify the last team abbreviation within each group bc bball ref puts the team that the player ended the season with last
+      last_team = last(TEAM_ABBREVIATION)
+    ) %>%
+    # Keep rows based on conditions:
+    # - If the player was traded (has "TOT"), keep only the "TOT" row
+    # - If the player was not traded, keep the original row
+    filter((has_tot & TEAM_ABBREVIATION == "TOT") | !has_tot) %>%
+    # Update TEAM_ABBREVIATION for "TOT" rows
+    mutate(TEAM_ABBREVIATION = ifelse(TEAM_ABBREVIATION == "TOT", last_team, TEAM_ABBREVIATION)) %>%
+    ungroup() %>%
+    # Drop helper columns
+    select(-has_tot, -last_team)
+  
+  
   return(df_advanced)
 }

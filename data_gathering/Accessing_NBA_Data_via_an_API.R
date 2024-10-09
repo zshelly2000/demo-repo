@@ -34,7 +34,7 @@ get_NBA_data_via_API <- function(){
     'PlayerPosition' = '',
     'PlusMinus' = 'N',
     'Rank' = 'N',
-    'Season' = '2022-23',
+    'Season' = '2023-24',
     'SeasonSegment' = '',
     'SeasonType' = 'Regular Season',
     'ShotClockRange' = '',
