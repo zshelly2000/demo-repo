@@ -11,7 +11,7 @@ per_game_br_webscrape <- function(){
   
   # Scrape all the data
   raw_data <- page %>%
-    html_nodes(".left , .center , .right") %>%
+    html_nodes(".left , .right , .center") %>%
     html_text()
   
   #extracting the column names
@@ -61,6 +61,43 @@ per_game_br_webscrape <- function(){
   #convert the matrix to a data.frame and assign column names
   df_per_game <- as.data.frame(data_matrix, stringsAsFactors = FALSE)
   colnames(df_per_game) <- column_names
+  
+  #the way that the raw_data comes in off of this data pull, it duplicates after the row that says "League Average" (a row that I also would like to remove)
+  # Step 1: Find the index where Player == "League Average"
+  index_league_avg <- which(df_per_game$Player == "League Average")
+  
+  # Step 2: If "League Average" is found, subset the DataFrame to remove that row and everything after it
+  if (length(index_league_avg) > 0) {
+    df_per_game <- df_per_game[1:(index_league_avg - 1), ]
+  }
+  
+  #they use pho, cho, and brk I want phx, cha, and bkn to be the official abbreviations
+  df_per_game$Team[df_per_game$Team == 'PHO'] <- 'PHX'
+  df_per_game$Team[df_per_game$Team == 'CHO'] <- 'CHA'
+  df_per_game$Team[df_per_game$Team == 'BRK'] <- 'BKN'
+  
+  #I want to normalize column headers that will be shared across tables i.e. team name, player name, age, player_id
+  colnames(df_per_game)[colnames(df_per_game) == "Rk"] <- "PLAYER_ID"
+  colnames(df_per_game)[colnames(df_per_game) == "Player"] <- "PLAYER_NAME"
+  colnames(df_per_game)[colnames(df_per_game) == "Age"] <- "AGE"
+  colnames(df_per_game)[colnames(df_per_game) == "Team"] <- "TEAM_ABBREVIATION"
+  
+  #Basketball Reference does multiple lines for players who played for multiple teams during the season. I want to use the team that they ended the year with.
+  df_per_game <- df_per_game %>%
+    group_by(PLAYER_ID) %>%
+    mutate(
+      #the first row in every duplicated player instance will always be the entire season but won't have the correct team if they were traded
+      first_team = first(TEAM_ABBREVIATION),
+      # Identify the last team abbreviation within each group bc bball ref puts the team that the player ended the season with last (if only one team then it will be first and last)
+      last_team = last(TEAM_ABBREVIATION)
+    ) %>%
+    # Keep rows that match the first_team because these will always be the entire seaosn stats
+    filter(TEAM_ABBREVIATION == first_team) %>%
+    # Update TEAM_ABBREVIATION for "TOT" rows
+    mutate(TEAM_ABBREVIATION = last_team) %>%
+    ungroup() %>%
+    # Drop helper columns
+    select(-first_team, -last_team)
   
   return(df_per_game)
 }
